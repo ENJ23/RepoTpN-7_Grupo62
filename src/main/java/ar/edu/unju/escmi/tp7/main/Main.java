@@ -165,6 +165,18 @@ public class Main  {
                 case 11:
                     clienteService.mostrarClientes();
                     break;
+                case 12:
+	                   facturaService.mostrarFacturasFiltradas();
+	                    break;
+	                case 0:
+	                    System.out.println("Saliendo...");
+	                    break;
+	                default:
+	                    System.out.println("Opción no válida. Intente de nuevo.");
+	            }
+	        } while (opcion != 0);
+	    }
+}
 	    
 
 }
