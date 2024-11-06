@@ -121,6 +121,50 @@ public class Main  {
                 		System.out.println("Ha ocurrido un error. Intentelo de nuevo.");
                 	}
                     break;
+                case 8:
+                	try {
+	                	System.out.println("Ingrese el id del producto a modificar: ");
+	                	Long idProducto = scanner.nextLong();
+	                	scanner.nextLine();
+	                	
+	                	Producto productoAModificar = productoService.buscarProducto(idProducto);
+	                	System.out.println("El precio actual de ese producto es de: " + productoAModificar.getPrecioUnitario());
+	                	System.out.println("Ingrese el nuevo precio del producto: ");
+	                	double precioNuevo = scanner.nextDouble();
+	                	scanner.nextLine();
+	                	
+	                	productoService.modificarPrecio(productoAModificar, precioNuevo);
+	                	
+	                	}catch(InputMismatchException e) {
+		                		System.out.println("Ingrese un numero por favor.\nError: " + e.getMessage());
+	                	}catch(Exception e) {
+	                		System.out.println("Ha ocurrido un error: " + e.getMessage() + "\nIntentelo de nuevo.");
+	                		opcion = 999;
+	    	        		scanner.nextLine();
+	                	}
+                    break;
+                case 9:
+                	try {
+	                	System.out.println("Ingrese el id del producto a eliminar: ");
+	                	Long idProducto = scanner.nextLong();
+	                	scanner.nextLine();
+	                	Producto productoAEliminar = productoService.buscarProducto(idProducto);
+	                	productoService.eliminarProducto(productoAEliminar);
+	                	}catch(InputMismatchException e) {
+	                		System.out.println("Ingrese un numero por favor.\nError: " + e.getMessage());
+            			}catch(Exception e) {
+	                		System.out.println("Ha ocurrido un error: " + e.getMessage() + "\nIntentelo de nuevo.");
+	                		opcion = 999;
+	    	        		scanner.nextLine();
+	                	}
+                   // eliminarProductoLogico();
+                    break;
+                case 10:
+                    facturaService.mostrarFacturas();
+                    break;
+                case 11:
+                    clienteService.mostrarClientes();
+                    break;
 	    
 
 }
