@@ -17,11 +17,7 @@ import javax.persistence.Table;
 @Table(name = "facturas")
 public class Factura {
 
-	@Override
-	public String toString() {
-		return "Factura [id=" + id + ", fecha=" + fecha + ", cliente=" + cliente + ", domicilio=" + domicilio
-				+ ", total=" + total + ", estado=" + estado + ", detalles=" + detalles + "]";
-	}
+	
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,7 +58,25 @@ public class Factura {
 		this.estado = estado;
 		this.detalles = detalles;
 	}
+	
+	@Override
+		public String toString() {
+			return "Factura [id=" + id + ", fecha=" + fecha + ", cliente=" + cliente + ", domicilio=" + domicilio
+					+ ", total=" + total + ", estado=" + estado + "]";
+		}
+	
+	public void mostrarDetallesFactura() {
+        if (detalles == null || detalles.isEmpty()) {
+            System.out.println("No hay detalles para esta factura.");
+            return;
+        }
 
+        System.out.println("Detalles de la Factura ID: " + id);
+        for (DetalleFactura detalle : detalles) {
+            System.out.println(detalle); // Asumiendo que DetalleFactura tiene un método toString() bien definido
+        }
+    }
+	
 	public Long getId() {
 		return id;
 	}

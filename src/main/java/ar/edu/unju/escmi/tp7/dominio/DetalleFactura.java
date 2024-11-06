@@ -46,6 +46,7 @@ public class DetalleFactura {
 			this.subtotal = subtotal;
 		}
 
+		
 		public Long getId() {
 			return id;
 		}
@@ -85,6 +86,13 @@ public class DetalleFactura {
 		public void setFactura(Factura factura) {
 			this.factura = factura;
 		}
+
+		@Override
+		public String toString() {
+			return "DetalleFactura [id=" + id + ", producto=" + producto + ", cantidad=" + cantidad + ", factura="
+					+ factura + ", subtotal=" + subtotal + "]";
+		}
 	    
+		
 	    
 }

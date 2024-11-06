@@ -41,6 +41,14 @@ public class Producto {
 			this.precioUnitario = precioUnitario;
 			this.estado = estado;
 		}
+		
+		
+
+		@Override
+		public String toString() {
+			return "Producto [id=" + id + ", descripcion=" + descripcion + ", precioUnitario=" + precioUnitario
+					+ ", estado=" + estado + "]";
+		}
 
 		public Long getId() {
 			return id;
