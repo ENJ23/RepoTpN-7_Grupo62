@@ -70,6 +70,38 @@ public class Main  {
                         } catch (NumberFormatException e) {
                             System.out.print("Por favor, ingrese un valor numérico válido: ");
                         }
+                	 }
+                    Factura facturaBuscada = facturaService.buscarFactura(idFactura);
+                    if (facturaBuscada != null) {
+                    //System.out.println("Aquí está la factura buscada: \n" + facturaBuscada);
+                    System.out.println("ID: " + facturaBuscada.getId() + 
+                            "\nFecha: " + facturaBuscada.getFecha() + 
+                            "\nCliente: " + (facturaBuscada.getCliente() != null ? facturaBuscada.getCliente().getNombre() : "N/A") + 
+                            " " + (facturaBuscada.getCliente() != null ? facturaBuscada.getCliente().getApellido() : "N/A") + 
+                            "\nDomicilio: " + facturaBuscada.getDomicilio() + 
+                            "\nTotal: " + facturaBuscada.getTotal() + 
+                            "\nEstado: " + facturaBuscada.isEstado());
+                    System.out.println("Detalles: ");
+                    facturaBuscada.mostrarDetallesFactura();
+                    }else {
+                    	System.out.println("Factura no encontrada");
+                    }
+                    break;
+                    
+                case 5:
+                	long idFacturaEliminar = 0;
+                	System.out.println("Ingrese el id de la factura que busca eliminar: ");
+                	while (true) {
+                        try {
+                            idFacturaEliminar = Long.parseLong(scanner.nextLine());
+                            break;
+                        } catch (NumberFormatException e) {
+                            System.out.print("Por favor, ingrese un valor numérico válido para el precio: ");
+                        }
+                    }
+                	Factura facturaEliminar = facturaService.buscarFactura(idFacturaEliminar);
+                    facturaService.eliminarFactura(facturaEliminar);
+                    break;
 	    
 
 }
