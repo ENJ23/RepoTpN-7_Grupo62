@@ -102,6 +102,25 @@ public class Main  {
                 	Factura facturaEliminar = facturaService.buscarFactura(idFacturaEliminar);
                     facturaService.eliminarFactura(facturaEliminar);
                     break;
+                case 6:
+                	System.out.println("Nada que hacer aqui...");
+                    break;
+                case 7:
+                	try {
+                		int id = 0;
+	                	System.out.println("Ingrese el id del cliente buscado: ");
+	                	id = scanner.nextInt();
+	                	scanner.nextLine();
+	                	if (id != 0) {
+	                	Cliente clienteBuscado = clienteService.buscarCliente(id);
+	                    clienteService.modificarCliente(clienteBuscado);
+	                	}else {
+	                		System.out.println("ID no encontrado.");
+	                	}
+                	}catch(Exception e) {
+                		System.out.println("Ha ocurrido un error. Intentelo de nuevo.");
+                	}
+                    break;
 	    
 
 }
