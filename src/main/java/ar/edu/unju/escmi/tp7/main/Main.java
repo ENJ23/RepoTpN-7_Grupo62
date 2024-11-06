@@ -37,6 +37,39 @@ public class Main  {
 	            System.out.println("11 - Mostrar todos los clientes");
 	            System.out.println("12 - Mostrar las facturas que superen el total de $500.000");
 	            System.out.println("0 - Salir");
+	            System.out.print("Seleccione una opción: ");
+	            opcion = scanner.nextInt();
+	            scanner.nextLine();
+            
+        	}catch(Exception e) {
+        		opcion = 999;
+        		scanner.nextLine();
+        	}
+            switch (opcion) {
+                case 1:
+                	
+                	Cliente cliente = clienteService.ingresoDatos();
+                	clienteService.guardarCliente(cliente);
+                    break;
+                    
+                case 2:
+                	Producto producto = productoService.ingresoDatos();
+                    productoService.altaProducto(producto);
+                    break;
+                case 3:
+                    facturaService.realizarVenta();
+                    break;
+                case 4:
+                	
+                	System.out.println("Ingrese el id de la factura buscada: ");
+                	long idFactura = 0;
+                	while (true) {
+                        try {
+                            idFactura = Long.parseLong(scanner.nextLine());
+                            break;
+                        } catch (NumberFormatException e) {
+                            System.out.print("Por favor, ingrese un valor numérico válido: ");
+                        }
 	    
 
 }
