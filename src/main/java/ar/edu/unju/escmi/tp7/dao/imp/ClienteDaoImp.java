@@ -31,10 +31,16 @@ public class ClienteDaoImp implements IClienteDao {
         String domicilio = scanner.nextLine();
 
         do {
-        System.out.print("Ingrese el DNI del cliente: ");
+        	try {
+        System.out.print("Ingrese el DNI del cliente: ( Utilizar el siguiente formato: '99999999') ");
         dni = scanner.nextInt();
         scanner.nextLine();
-        } while (dni > 99999999);
+        	}catch(Exception e){
+        		System.out.println("Error al ingresar el DNI. Intentelo de nuevo");
+        		dni = 999999999;
+        		scanner.nextLine();
+        	}
+        } while (dni > 99999999 || dni < 10000000);
         boolean estado = true; 
 
         return new Cliente(nombre, apellido, domicilio, dni, estado);
