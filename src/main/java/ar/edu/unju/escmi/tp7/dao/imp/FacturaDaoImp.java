@@ -26,6 +26,7 @@ public class FacturaDaoImp implements IFacturaDao {
 		// TODO Auto-generated method stub
 		EntityTransaction transaction = manager.getTransaction();
 		ProductoDaoImp productoService = new ProductoDaoImp();
+		ClienteDaoImp clienteService = new ClienteDaoImp();
         try {
             transaction.begin();
 
@@ -36,7 +37,8 @@ public class FacturaDaoImp implements IFacturaDao {
             factura.setFecha(LocalDate.now());
 
             // Ingresar cliente
-            System.out.print("Ingrese el ID del cliente: ");
+            System.out.print("Ingrese el ID del cliente:\n ");
+            clienteService.mostrarClientes();
             Long clienteId = Long.parseLong(scanner.nextLine());
             Cliente cliente = manager.find(Cliente.class, clienteId);
             if (cliente == null) {
@@ -55,13 +57,14 @@ public class FacturaDaoImp implements IFacturaDao {
             do {
                 DetalleFactura detalle = new DetalleFactura();
                 // Detalles de la factura
-                System.out.print("Ingrese el ID del producto: ");
+                System.out.print("Ingrese el ID del producto:\n ");
+                productoService.mostrarProductos();
                 Long productoId = Long.parseLong(scanner.nextLine());
                 Producto producto = productoService.buscarProducto(productoId);
                 if (producto == null) {
                     System.out.println("Producto no encontrado. No se puede agregar al detalle.");
                     
-                    System.out.println("Si desea salir al menu principal, ingrese 's'.");
+                    System.out.println("Si desea salir al menu principal, ingrese 's'. (s/n)");
                     if (scanner.nextLine().equals("s")) {
                     	return;
                     }
@@ -97,8 +100,8 @@ public class FacturaDaoImp implements IFacturaDao {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            e.printStackTrace();
             System.out.println("Error al crear la factura.");
+            System.out.println("Error: " + e.getMessage());
         } finally {
             //scanner.close();
             //manager.close();
