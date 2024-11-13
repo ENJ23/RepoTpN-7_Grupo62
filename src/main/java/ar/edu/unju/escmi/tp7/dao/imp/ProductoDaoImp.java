@@ -1,9 +1,11 @@
 package ar.edu.unju.escmi.tp7.dao.imp;
 
+import java.util.List;
 import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 import ar.edu.unju.escmi.tp7.config.EmfSingleton;
 import ar.edu.unju.escmi.tp7.dao.IProductoDao;
@@ -147,6 +149,35 @@ public class ProductoDaoImp implements IProductoDao{
 
 			//manager.close();
 		}
+	}
+
+	@Override
+	public void mostrarProductos() {
+		// TODO Auto-generated method stub
+		EntityTransaction transaction = manager.getTransaction();
+        try {
+        	transaction.begin();
+        	TypedQuery<Producto> query = manager.createQuery("SELECT p FROM Producto p", Producto.class);
+        	List<Producto> productos = query.getResultList();
+        	if(productos != null) {
+	        	for (Producto producto : productos) {
+	        		System.out.println(producto);
+	        		}
+        	}else {
+        		System.out.println("No hay facturas registrados.");
+        		transaction.rollback();
+        	}
+        	transaction.commit();
+        }catch(Exception e) {
+        	if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			
+			System.out.println("No se pudo encontrar el cliente asociado. Intentelo nuevamente más tarde.");
+			System.out.println("Error: " + e.getMessage());
+        }finally {
+        	//manager.close();
+        }
 	}
 
 	
