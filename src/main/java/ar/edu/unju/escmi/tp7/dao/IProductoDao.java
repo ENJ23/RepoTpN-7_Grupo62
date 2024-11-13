@@ -9,4 +9,5 @@ public interface IProductoDao {
 	public void eliminarProducto(Producto producto);
 	public Producto buscarProducto(Long id);
 	public void modificarPrecio(Producto producto, double precioNuevo);
+	public void mostrarProductos();
 }
