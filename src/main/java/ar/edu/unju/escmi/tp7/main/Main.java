@@ -1,12 +1,17 @@
+
 package ar.edu.unju.escmi.tp7.main;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import ar.edu.unju.escmi.tp7.dao.imp.ClienteDaoImp;
 import ar.edu.unju.escmi.tp7.dao.imp.FacturaDaoImp;
 import ar.edu.unju.escmi.tp7.dao.imp.ProductoDaoImp;
 import ar.edu.unju.escmi.tp7.dominio.Cliente;
+import ar.edu.unju.escmi.tp7.dominio.DetalleFactura;
 import ar.edu.unju.escmi.tp7.dominio.Factura;
 import ar.edu.unju.escmi.tp7.dominio.Producto;
 
@@ -16,6 +21,7 @@ public class Main {
 	    private static ClienteDaoImp clienteService = new ClienteDaoImp();
 	    private static ProductoDaoImp productoService = new ProductoDaoImp();
 	    private static FacturaDaoImp facturaService = new FacturaDaoImp();
+	    private static Util util = new Util();
 
 	    public static void main(String[] args) {
 	        int opcion;
@@ -47,17 +53,92 @@ public class Main {
 	            switch (opcion) {
 	                case 1:
 	                	
-	                	Cliente cliente = clienteService.ingresoDatos();
+
+	                	Cliente cliente = util.crearCliente();
 	                	clienteService.guardarCliente(cliente);
 	                    break;
 	                    
 	                case 2:
-	                	Producto producto = productoService.ingresoDatos();
+	                	
+	                	Producto producto = util.crearProducto();
 	                    productoService.altaProducto(producto);
 	                    break;
+	                    
 	                case 3:
-	                    facturaService.realizarVenta();
+	                	try {
+	                	// Ingresar datos de la factura
+	                    Factura factura = new Factura();
+
+	                    //Fecha actual para la factura
+	                    factura.setFecha(LocalDate.now());
+
+	                    // Ingresar cliente
+	                    System.out.print("Ingrese el ID del cliente:\n ");
+	                    clienteService.mostrarClientes();
+	                    Long clienteId = Long.parseLong(scanner.nextLine());
+	                    Cliente comprador = clienteService.buscarCliente(clienteId);
+	                    
+	                    if (comprador == null) {
+	                        System.out.println("Cliente no encontrado. La factura no se puede crear.");
+	                        return;
+	                    }
+	                    factura.setCliente(comprador);
+
+	                    //Domicilio del cliente para la factura
+	                    factura.setDomicilio(comprador.getDomicilio());
+
+
+	                    // Ingresar detalles de la factura
+	                    List<DetalleFactura> detalles = new ArrayList<>();
+	                    String continuar = "s";
+	                    do {
+	                        DetalleFactura detalle = new DetalleFactura();
+	                        // Detalles de la factura
+	                        System.out.print("Ingrese el ID del producto:\n ");
+	                        productoService.mostrarProductos();
+	                        Long productoId = Long.parseLong(scanner.nextLine());
+	                        Producto productoComprado = productoService.buscarProducto(productoId);
+	                        if (productoComprado == null || !productoComprado.isEstado()) {
+	                        	
+	                            System.out.println("Producto no encontrado o No Disponible. No se puede agregar al detalle.");
+	                            
+	                            System.out.println("Si desea salir al menu principal, ingrese 's'. (s/n)");
+	                            if (scanner.nextLine().equals("s")) {
+	                            	return;
+	                            }
+	                            continue;
+	                        }
+	                        detalle.setProducto(productoComprado);
+
+	                        System.out.print("Ingrese la cantidad: ");
+	                        int cantidad = Integer.parseInt(scanner.nextLine());
+	                        detalle.setCantidad(cantidad);
+
+	                        detalles.add(detalle);
+	                        detalle.setFactura(factura);
+	                        comprador.getFacturas().add(factura);
+	                        System.out.print("¿Desea agregar otro detalle? (s/n): ");
+	                        continuar = scanner.nextLine();
+	                    } while (continuar.equalsIgnoreCase("s"));
+	                    
+	                    double total = 0.0;
+		                    for (DetalleFactura detalle : detalles) {
+		                        total += detalle.getProducto().getPrecioUnitario() * detalle.getCantidad();
+		                    }
+	                    factura.setTotal(total);
+	                    factura.setDetalles(detalles);
+	                    factura.setEstado(true);
+	                    
+	                    facturaService.guardarFactura(factura);
+	                    
+	                } catch (Exception e) {
+
+	                    System.out.println("Error al crear la factura.");
+	                    System.out.println("Error: " + e.getMessage());
+	                } 
+	                    //
 	                    break;
+	       
 	                case 4:
 	                	
 	                	System.out.println("Ingrese el id de la factura buscada: ");
@@ -79,7 +160,7 @@ public class Main {
 	                            " " + (facturaBuscada.getCliente() != null ? facturaBuscada.getCliente().getApellido() : "N/A") + 
 	                            "\nDomicilio: " + facturaBuscada.getDomicilio() + 
 	                            "\nTotal: " + facturaBuscada.getTotal() + 
-	                            "\nEstado: " + facturaBuscada.isEstado());
+	                            "\nEstado: " + (facturaBuscada.isEstado() == true ? facturaBuscada.isEstado() : "No Disponible"));
 	                    System.out.println("Detalles: ");
 	                    facturaBuscada.mostrarDetallesFactura();
 	                    }else {
@@ -90,6 +171,7 @@ public class Main {
 	                case 5:
 	                	long idFacturaEliminar = 0;
 	                	System.out.println("Ingrese el id de la factura que busca eliminar: ");
+	                	facturaService.mostrarFacturas();
 	                	while (true) {
 	                        try {
 	                            idFacturaEliminar = Long.parseLong(scanner.nextLine());
@@ -108,6 +190,7 @@ public class Main {
 	                	try {
 	                		int id = 0;
 		                	System.out.println("Ingrese el id del cliente buscado: ");
+		                	clienteService.mostrarClientes();
 		                	id = scanner.nextInt();
 		                	scanner.nextLine();
 		                	if (id != 0) {
@@ -123,6 +206,8 @@ public class Main {
 	                case 8:
 	                	try {
 		                	System.out.println("Ingrese el id del producto a modificar: ");
+		                	productoService.mostrarProductos();
+
 		                	Long idProducto = scanner.nextLong();
 		                	scanner.nextLine();
 		                	
@@ -136,6 +221,8 @@ public class Main {
 		                	
 		                	}catch(InputMismatchException e) {
 			                		System.out.println("Ingrese un numero por favor.\nError: " + e.getMessage());
+			                		opcion=999;
+			                		scanner.nextLine();
 		                	}catch(Exception e) {
 		                		System.out.println("Ha ocurrido un error: " + e.getMessage() + "\nIntentelo de nuevo.");
 		                		opcion = 999;
@@ -145,12 +232,15 @@ public class Main {
 	                case 9:
 	                	try {
 		                	System.out.println("Ingrese el id del producto a eliminar: ");
+		                	productoService.mostrarProductos();
 		                	Long idProducto = scanner.nextLong();
 		                	scanner.nextLine();
 		                	Producto productoAEliminar = productoService.buscarProducto(idProducto);
 		                	productoService.eliminarProducto(productoAEliminar);
 		                	}catch(InputMismatchException e) {
 		                		System.out.println("Ingrese un numero por favor.\nError: " + e.getMessage());
+		                		opcion=999;
+		                		scanner.nextLine();
 	            			}catch(Exception e) {
 		                		System.out.println("Ha ocurrido un error: " + e.getMessage() + "\nIntentelo de nuevo.");
 		                		opcion = 999;

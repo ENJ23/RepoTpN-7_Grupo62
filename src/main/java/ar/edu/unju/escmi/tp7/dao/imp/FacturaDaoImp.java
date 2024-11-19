@@ -1,10 +1,6 @@
 package ar.edu.unju.escmi.tp7.dao.imp;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
@@ -12,86 +8,19 @@ import javax.persistence.TypedQuery;
 import ar.edu.unju.escmi.tp7.config.EmfSingleton;
 import ar.edu.unju.escmi.tp7.dao.IFacturaDao;
 import ar.edu.unju.escmi.tp7.dominio.Cliente;
-import ar.edu.unju.escmi.tp7.dominio.DetalleFactura;
 import ar.edu.unju.escmi.tp7.dominio.Factura;
-import ar.edu.unju.escmi.tp7.dominio.Producto;
 
 public class FacturaDaoImp implements IFacturaDao {
 
-	Scanner scanner = new Scanner(System.in);
 	private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
 	
 	@Override
-	public void realizarVenta() {
+	public void guardarFactura(Factura factura) {
 		// TODO Auto-generated method stub
 		EntityTransaction transaction = manager.getTransaction();
-		ProductoDaoImp productoService = new ProductoDaoImp();
-		ClienteDaoImp clienteService = new ClienteDaoImp();
+		
         try {
             transaction.begin();
-
-            // Ingresar datos de la factura
-            Factura factura = new Factura();
-
-            //Fecha actual para la factura
-            factura.setFecha(LocalDate.now());
-
-            // Ingresar cliente
-            System.out.print("Ingrese el ID del cliente:\n ");
-            clienteService.mostrarClientes();
-            Long clienteId = Long.parseLong(scanner.nextLine());
-            Cliente cliente = manager.find(Cliente.class, clienteId);
-            if (cliente == null) {
-                System.out.println("Cliente no encontrado. La factura no se puede crear.");
-                return;
-            }
-            factura.setCliente(cliente);
-
-            //Domicilio del cliente para la factura
-            factura.setDomicilio(cliente.getDomicilio());
-
-
-            // Ingresar detalles de la factura
-            List<DetalleFactura> detalles = new ArrayList<>();
-            String continuar = "s";
-            do {
-                DetalleFactura detalle = new DetalleFactura();
-                // Detalles de la factura
-                System.out.print("Ingrese el ID del producto:\n ");
-                productoService.mostrarProductos();
-                Long productoId = Long.parseLong(scanner.nextLine());
-                Producto producto = productoService.buscarProducto(productoId);
-                if (producto == null) {
-                    System.out.println("Producto no encontrado. No se puede agregar al detalle.");
-                    
-                    System.out.println("Si desea salir al menu principal, ingrese 's'. (s/n)");
-                    if (scanner.nextLine().equals("s")) {
-                    	return;
-                    }
-                    continue;
-                }
-                detalle.setProducto(producto);
-
-                System.out.print("Ingrese la cantidad: ");
-                int cantidad = Integer.parseInt(scanner.nextLine());
-                detalle.setCantidad(cantidad);
-
-                detalles.add(detalle);
-                detalle.setFactura(factura);
-                cliente.getFacturas().add(factura);
-                System.out.print("¿Desea agregar otro detalle? (s/n): ");
-                continuar = scanner.nextLine();
-            } while (continuar.equalsIgnoreCase("s"));
-            
-            double total = 0.0;
-            for (DetalleFactura detalle : detalles) {
-                total += detalle.getProducto().getPrecioUnitario() * detalle.getCantidad();
-            }
-            factura.setTotal(total);
-            factura.setDetalles(detalles);
-            
-            factura.setEstado(true);
-            
             manager.persist(factura);
             transaction.commit();
             System.out.println("Factura creada exitosamente.");
@@ -157,7 +86,7 @@ public class FacturaDaoImp implements IFacturaDao {
                         " " + (cliente != null ? cliente.getApellido() : "N/A") + 
                         ", Domicilio: " + factura.getDomicilio() + 
                         ", Total: " + factura.getTotal() + 
-                        ", Estado: " + factura.isEstado());
+                        ", Estado: " + (factura.isEstado() == true ? "Disponible" : "No Disponible"));
             	}
         	}else {
         		System.out.println("No hay facturas registrados.");

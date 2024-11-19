@@ -1,8 +1,6 @@
 package ar.edu.unju.escmi.tp7.dao.imp;
 
 import java.util.List;
-import java.util.Scanner;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
@@ -14,46 +12,7 @@ import ar.edu.unju.escmi.tp7.dominio.Producto;
 public class ProductoDaoImp implements IProductoDao{
 
 	private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
-
-	private static Scanner scanner = new Scanner(System.in);
 	
-	@Override
-	public Producto ingresoDatos() {
-		
-		try {
-		Producto producto = new Producto();
-
-        System.out.print("Ingrese la descripción del producto: ");
-        producto.setDescripcion(scanner.nextLine());
-
-        System.out.print("Ingrese el precio unitario del producto: ");
-        
-        while (true) {
-            try {
-                producto.setPrecioUnitario(Double.parseDouble(scanner.nextLine()));
-                break;
-            } catch (NumberFormatException e) {
-                System.out.print("Por favor, ingrese un valor numérico válido para el precio: ");
-            }
-        }
-
-		/*
-		 * System.out.
-		 * print("Ingrese el estado del producto (true para activo, false para inactivo): "
-		 * ); while (true) { try {
-		 * producto.setEstado(Boolean.parseBoolean(scanner.nextLine())); break; } catch
-		 * (Exception e) { System.out.print("Por favor, ingrese 'true' o 'false': "); }
-		 * }
-		 */
-        producto.setEstado(true);
-        return producto;
-        
-		}catch(Exception e) {
-			System.out.println("Ha ocurrido un error inesperado. Intentelo de nuevo mas tarde.");
-			System.out.println("Error: " + e.getMessage());
-			return null;
-		}
-	}
 
 	@Override
 	public void altaProducto(Producto producto) {
