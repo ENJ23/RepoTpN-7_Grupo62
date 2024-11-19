@@ -1,3 +1,4 @@
+
 package ar.edu.unju.escmi.tp7.dao;
 
 import ar.edu.unju.escmi.tp7.dominio.Factura;
@@ -11,3 +12,4 @@ public interface IFacturaDao {
 	public void mostrarFacturasFiltradas();
 	
 }
+
